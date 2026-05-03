@@ -1,0 +1,151 @@
+@media (max-width: 767px) {
+  .mobile-only {
+    display: flex;
+  }
+  
+  .banner-text h1 {
+    font-size: 2.5rem;
+  }
+  
+  .banner-text h2 {
+    font-size: 1rem;
+  }
+  
+  .left-sidebar,
+  .right-sidebar {
+    display: none;
+  }
+  
+  .main-container {
+    padding: 0.75rem;
+  }
+  
+  .post-content {
+    padding: 1rem;
+  }
+  
+  .post-title {
+    font-size: 1.25rem;
+  }
+  
+  .post-meta {
+    gap: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .post-cover {
+    max-height: 15vh;
+    margin: 0.75rem;
+  }
+  
+  .back-to-top {
+    bottom: 1rem;
+    right: 1rem;
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .wallpaper-panel,
+  .hue-panel {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
+  
+  .search-panel {
+    left: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .right-sidebar {
+    display: none;
+  }
+  
+  .content-wrapper {
+    grid-template-columns: 17.5rem 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .left-sidebar,
+  .right-sidebar {
+    display: block;
+  }
+}
+
+/* 暗色模式响应 */
+@media (prefers-color-scheme: dark) {
+  body:not([data-theme="light"]) {
+    --page-bg: #111827;
+    --card-bg: #1f2937;
+    --float-panel-bg: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --text-light: #6b7280;
+    --line-divider: #374151;
+    --btn-regular-bg: #374151;
+    --btn-content: #f3f4f6;
+    --btn-hover-bg: #4b5563;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  #navbar-wrapper,
+  .banner-wrapper,
+  .fullscreen-wallpaper,
+  .back-to-top,
+  .left-sidebar,
+  .right-sidebar,
+  .site-footer {
+    display: none !important;
+  }
+  
+  .main-container {
+    max-width: none;
+    padding: 0;
+  }
+  
+  .content-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+}
+
+/* 减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .wave {
+    animation: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  :root {
+    --line-divider: #000000;
+  }
+  
+  .dark {
+    --line-divider: #ffffff;
+  }
+  
+  .post-card,
+  .sidebar-card {
+    border-width: 2px;
+  }
+}

@@ -1,0 +1,110 @@
+:root {
+  --page-bg: #f8f9fa;
+  --card-bg: #ffffff;
+  --float-panel-bg: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+  --line-divider: #e5e7eb;
+  --hue: 0;
+  --primary: hsl(var(--hue), 70%, 60%);
+  --primary-dark: hsl(var(--hue), 70%, 50%);
+  --primary-light: hsl(var(--hue), 70%, 70%);
+  --primary-rgb: 223, 77, 77;
+  --btn-regular-bg: #f3f4f6;
+  --btn-content: #1f2937;
+  --btn-hover-bg: #e5e7eb;
+  --btn-plain-bg-hover: rgba(0, 0, 0, 0.04);
+  --btn-plain-bg-active: rgba(0, 0, 0, 0.08);
+  --enter-btn-bg: #f3f4f6;
+  --enter-btn-bg-hover: #e5e7eb;
+  --enter-btn-bg-active: #d1d5db;
+  --title-active: var(--primary);
+  --radius-large: 1rem;
+  --page-width: 90rem;
+}
+
+.dark {
+  --page-bg: #111827;
+  --card-bg: #1f2937;
+  --float-panel-bg: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-light: #6b7280;
+  --line-divider: #374151;
+  --btn-regular-bg: #374151;
+  --btn-content: #f3f4f6;
+  --btn-hover-bg: #4b5563;
+  --btn-plain-bg-hover: rgba(255, 255, 255, 0.05);
+  --btn-plain-bg-active: rgba(255, 255, 255, 0.1);
+  --enter-btn-bg: #374151;
+  --enter-btn-bg-hover: #4b5563;
+  --enter-btn-bg-active: #6b7280;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'ZenMaruGothic-Medium', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--page-bg);
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 工具类 */
+.hidden {
+  display: none !important;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* 页面布局 */
+.main-container {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .content-wrapper {
+    grid-template-columns: 17.5rem 1fr 17.5rem;
+  }
+}

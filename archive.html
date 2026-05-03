@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lhx28 - 归档</title>
+  <meta name="description" content="demo文章展示">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    /* Archive 页面专用样式 */
+    .archive-header {
+      position: relative;
+      padding: 3rem 1rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary) 0%, hsl(var(--hue), 70%, 50%) 100%);
+      color: white;
+    }
+
+    .archive-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="8" fill="rgba(255,255,255,0.08)"/></svg>') repeat;
+      background-size: 80px;
+    }
+
+    .archive-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .archive-header p {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .archive-container {
+      max-width: 64rem;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--line-divider);
+      border-radius: var(--radius-large);
+    }
+
+    .filter-bar h3 {
+      width: 100%;
+      font-size: 1rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      background: var(--btn-regular-bg);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .filter-btn:hover {
+      background: var(--btn-hover-bg);
+      border-color: var(--primary);
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .archive-year {
+      margin-bottom: 2rem;
+    }
+
+    .archive-year-title {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--line-divider);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .archive-year-title .count {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .archive-list {
+      list-style: none;
+    }
+
+    .archive-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background: var(--card-bg);
+      border: 1px solid var(--line-divider);
+      border-radius: 0.75rem;
+      transition: all 0.2s ease;
+    }
+
+    .archive-item:hover {
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: var(--primary);
+    }
+
+    .archive-date {
+      flex-shrink: 0;
+      width: 5rem;
+      text-align: center;
+      padding: 0.5rem;
+      background: var(--btn-regular-bg);
+      border-radius: 0.5rem;
+    }
+
+    .archive-date .month {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .archive-date .day {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .archive-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .archive-info h3 {
+      font-size: 1.125rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-primary);
+    }
+
+    .archive-info h3 a:hover {
+      color: var(--primary);
+    }
+
+    .archive-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .archive-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .archive-meta svg {
+      width: 1em;
+      height: 1em;
+    }
+
+    .archive-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .archive-tag {
+      padding: 0.25rem 0.5rem;
+      background: var(--btn-regular-bg);
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .archive-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line-divider);
+      border-radius: var(--radius-large);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-card .label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .pin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.125rem 0.5rem;
+      background: var(--primary);
+      color: white;
+      font-size: 0.75rem;
+      border-radius: 0.25rem;
+      margin-right: 0.5rem;
+    }
+
+    @media (max-width: 767px) {
+      .archive-header {
+        padding: 2rem 1rem;
+      }
+
+      .archive-header h1 {
+        font-size: 2rem;
+      }
+
+      .archive-item {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .archive-date {
+        width: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .archive-date .month {
+        font-size: 0.875rem;
+      }
+
+      .filter-bar {
+        padding: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body class="enable-banner" data-layout-mode="grid">
+  <!-- 顶部导航 -->
+  <header id="navbar-wrapper">
+    <nav id="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="nav-logo">
+          <img src="assets/ico.png" alt="lhx28">
+          <span>lhx28</span>
+        </a>
+        <div class="nav-menu desktop-menu">
+          <a href="index.html" class="nav-item">
+            <svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7z"/></svg>
+            主页
+          </a>
+          <a href="archive.html" class="nav-item active">
+            <svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 18l4-4l-1.4-1.4l-1.6 1.6V10h-2v4.2l-1.6-1.6L8 14zm-7 3q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V19q0 .825-.587 1.413T19 21zm.4-15h13.2l-.85-1H6.25z"/></svg>
+            归档
+          </a>
+          <a href="about.html" class="nav-item">
+            <svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"/></svg>
+            关于
+          </a>
+        </div>
+        <div class="nav-tools">
+          <button id="theme-btn" class="tool-btn" title="切换主题">
+            <svg class="sun-icon" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M11 3V2q0-.425.288-.712T12 1t.713.288T13 2v1q0 .425-.288.713T12 4t-.712-.288T11 3m0 19v-1q0-.425.288-.712T12 20t.713.288T13 21v1q0 .425-.288.713T12 23t-.712-.288T11 22m11-9h-1q-.425 0-.712-.288T20 12t.288-.712T21 11h1q.425 0 .713.288T23 12t-.288.713T22 13M3 13H2q-.425 0-.712-.288T1 12t.288-.712T2 11h1q.425 0 .713.288T4 12t-.288.713T3 13"/></svg>
+            <svg class="moon-icon" width="1em" height="1em" viewBox="0 0 24 24" style="display: none;"><path fill="currentColor" d="M12 21q-3.775 0-6.387-2.613T3 12q0-3.45 2.25-5.988T11 3.05q.325-.05.575.088t.4.362t.163.525t-.188.575q-.425.65-.638 1.375T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q.775 0 1.538-.225t1.362-.625q.275-.175.563-.162t.512.137q.25.125.388.375t.087.6q-.35 3.45-2.937 5.725T12 21"/></svg>
+          </button>
+          <button id="hue-btn" class="tool-btn" title="主题色">
+            <svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22q-2.05 0-3.875-.788t-3.187-2.15t-2.15-3.187T2 12q0-2.075.813-3.9t2.2-3.175T8.25 2.788T12.2 2q2 0 3.775.688t3.113 1.9t2.125 2.875T22 11.05q0 2.875-1.75 4.413T16 17h-1.85q-.225 0-.312.125t-.088.275q0 .3.375.863t.375 1.287q0 1.25-.687 1.85T12 22m-5.5-9q.65 0 1.075-.425T8 11.5t-.425-1.075T6.5 10t-1.075.425T5 11.5t.425 1.075T6.5 13"/></svg>
+          </button>
+          <button id="mobile-menu-btn" class="tool-btn mobile-only" title="菜单">
+            <svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu" class="mobile-menu hidden">
+      <a href="index.html" class="mobile-nav-item">主页</a>
+      <a href="archive.html" class="mobile-nav-item">归档</a>
+      <a href="about.html" class="mobile-nav-item">关于</a>
+    </div>
+    <!-- 主题色面板 -->
+    <div id="hue-panel" class="hue-panel hidden">
+      <div class="hue-header">
+        <span>主题色</span>
+        <span id="hue-value">0</span>
+      </div>
+      <input type="range" id="hue-slider" min="0" max="360" value="0">
+    </div>
+  </header>
+
+  <!-- Archive 头部 -->
+  <section class="archive-header">
+    <h1>文章归档</h1>
+    <p>记录成长的每一个足迹</p>
+  </section>
+
+  <!-- 归档内容 -->
+  <main class="archive-container">
+    <!-- 统计卡片 -->
+    <div class="archive-stats">
+      <div class="stat-card">
+        <div class="number">6</div>
+        <div class="label">总文章数</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">4</div>
+        <div class="label">分类</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">11</div>
+        <div class="label">标签</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">32768</div>
+        <div class="label">总字数</div>
+      </div>
+    </div>
+
+    <!-- 筛选栏 -->
+    <div class="filter-bar">
+      <h3>
+        <svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v10q0 .825-.587 1.413T20 20z"/></svg>
+        筛选分类
+      </h3>
+      <button class="filter-btn active" data-category="all">全部</button>
+      <button class="filter-btn" data-category="前端开发">前端开发</button>
+      <button class="filter-btn" data-category="技术教程">技术教程</button>
+      <button class="filter-btn" data-category="生活随笔">生活随笔</button>
+      <button class="filter-btn" data-category="Python">Python</button>
+    </div>
+
+    <!-- 2025年文章 -->
+    <div class="archive-year" data-year="2025">
+      <h2 class="archive-year-title">
+        2025
+        <span class="count">(1 篇)</span>
+      </h2>
+      <ul class="archive-list">
+        <li class="archive-item" data-category="前端开发">
+          <div class="archive-date">
+            <div class="month">Jan</div>
+            <div class="day">20</div>
+          </div>
+          <div class="archive-info">
+            <h3>
+              <span class="pin-badge">
+                <svg width="0.875em" height="0.875em" viewBox="0 0 24 24"><path fill="currentColor" d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2z"/></svg>
+                置顶
+              </span>
+              <a href="https://www.runoob.com/cssref/css-pr-grid.html">前端学习笔记：CSS Grid 布局完全指南</a>
+            </h3>
+            <div class="archive-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 15.325q.35-.175.725-.25T7.5 15H8V4h-.5q-.625 0-1.062.438T6 5.5z"/></svg>
+                前端开发
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z"/></svg>
+                1741 字
+              </span>
+            </div>
+            <div class="archive-tags">
+              <span class="archive-tag"># CSS</span>
+              <span class="archive-tag"># 前端</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 2024年文章 -->
+    <div class="archive-year" data-year="2024">
+      <h2 class="archive-year-title">
+        2024
+        <span class="count">(3 篇)</span>
+      </h2>
+      <ul class="archive-list">
+        <li class="archive-item" data-category="前端开发">
+          <div class="archive-date">
+            <div class="month">May</div>
+            <div class="day">01</div>
+          </div>
+          <div class="archive-info">
+            <h3>
+              <a href="#">JavaScript 异步编程实践指南</a>
+            </h3>
+            <div class="archive-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 15.325q.35-.175.725-.25T7.5 15H8V4h-.5q-.625 0-1.062.438T6 5.5z"/></svg>
+                前端开发
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z"/></svg>
+                2350 字
+              </span>
+            </div>
+            <div class="archive-tags">
+              <span class="archive-tag"># JavaScript</span>
+              <span class="archive-tag"># 异步</span>
+            </div>
+          </div>
+        </li>
+        <li class="archive-item" data-category="技术教程">
+          <div class="archive-date">
+            <div class="month">Apr</div>
+            <div class="day">01</div>
+          </div>
+          <div class="archive-info">
+            <h3>
+              <a href="#">如何用 Astro 搭建个人博客</a>
+            </h3>
+            <div class="archive-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 15.325q.35-.175.725-.25T7.5 15H8V4h-.5q-.625 0-1.062.438T6 5.5z"/></svg>
+                技术教程
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z"/></svg>
+                1856 字
+              </span>
+            </div>
+            <div class="archive-tags">
+              <span class="archive-tag"># Astro</span>
+              <span class="archive-tag"># 博客</span>
+            </div>
+          </div>
+        </li>
+        <li class="archive-item" data-category="生活随笔">
+          <div class="archive-date">
+            <div class="month">Jan</div>
+            <div class="day">15</div>
+          </div>
+          <div class="archive-info">
+            <h3>
+              <a href="#">我的 2024 年度总结与展望</a>
+            </h3>
+            <div class="archive-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 15.325q.35-.175.725-.25T7.5 15H8V4h-.5q-.625 0-1.062.438T6 5.5z"/></svg>
+                生活随笔
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z"/></svg>
+                2160 字
+              </span>
+            </div>
+            <div class="archive-tags">
+              <span class="archive-tag"># 生活</span>
+              <span class="archive-tag"># 总结</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 2023年文章 -->
+    <div class="archive-year" data-year="2023">
+      <h2 class="archive-year-title">
+        2023
+        <span class="count">(1 篇)</span>
+      </h2>
+      <ul class="archive-list">
+        <li class="archive-item" data-category="Python">
+          <div class="archive-date">
+            <div class="month">Oct</div>
+            <div class="day">01</div>
+          </div>
+          <div class="archive-info">
+            <h3>
+              <a href="#">Python 数据分析入门笔记</a>
+            </h3>
+            <div class="archive-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 15.325q.35-.175.725-.25T7.5 15H8V4h-.5q-.625 0-1.062.438T6 5.5z"/></svg>
+                Python
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z"/></svg>
+                1856 字
+              </span>
+            </div>
+            <div class="archive-tags">
+              <span class="archive-tag"># Python</span>
+              <span class="archive-tag"># 数据分析</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 2022年文章 -->
+    <div class="archive-year" data-year="2022">
+      <h2 class="archive-year-title">
+        2022
+        <span class="count">(1 篇)</span>
+      </h2>
+      <ul class="archive-list">
+        <li class="archive-item" data-category="生活随笔">
+          <div class="archive-date">
+            <div class="month">Aug</div>
+            <div class="day">01</div>
+          </div>
+          <div class="archive-info">
+            <h3>
+              <a href="#">周末摄影分享：城市夜景</a>
+            </h3>
+            <div class="archive-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 15.325q.35-.175.725-.25T7.5 15H8V4h-.5q-.625 0-1.062.438T6 5.5z"/></svg>
+                生活随笔
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z"/></svg>
+                892 字
+              </span>
+            </div>
+            <div class="archive-tags">
+              <span class="archive-tag"># 摄影</span>
+              <span class="archive-tag"># 生活</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <!-- 返回顶部 -->
+  <button id="back-to-top" class="back-to-top hidden">
+    <svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 10.8l-3.9 3.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.6-4.6q.3-.3.7-.3t.7.3l4.6 4.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"/></svg>
+  </button>
+
+  <!-- JavaScript -->
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // 归档页筛选功能
+    (function() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const archiveItems = document.querySelectorAll('.archive-item');
+      const archiveYears = document.querySelectorAll('.archive-year');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const category = this.dataset.category;
+          
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+
+          archiveItems.forEach(item => {
+            if (category === 'all' || item.dataset.category === category) {
+              item.style.display = 'flex';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+
+          // 更新年份显示
+          archiveYears.forEach(year => {
+            const visibleItems = year.querySelectorAll('.archive-item[style*="display: flex"], .archive-item:not([style])');
+            let hasVisible = false;
+            visibleItems.forEach(item => {
+              if (item.style.display !== 'none') hasVisible = true;
+            });
+            year.style.display = hasVisible ? 'block' : 'none';
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
