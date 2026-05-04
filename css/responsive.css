@@ -75,23 +75,6 @@
   }
 }
 
-/* 暗色模式响应 */
-@media (prefers-color-scheme: dark) {
-  body:not([data-theme="light"]) {
-    --page-bg: #111827;
-    --card-bg: #1f2937;
-    --float-panel-bg: #1f2937;
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-muted: #9ca3af;
-    --text-light: #6b7280;
-    --line-divider: #374151;
-    --btn-regular-bg: #374151;
-    --btn-content: #f3f4f6;
-    --btn-hover-bg: #4b5563;
-  }
-}
-
 /* 打印样式 */
 @media print {
   #navbar-wrapper,
@@ -135,7 +118,7 @@
 }
 
 /* 高对比度模式 */
-@media (prefers-contrast: high) {
+@media (prefers-contrast: less) {
   :root {
     --line-divider: #000000;
   }
