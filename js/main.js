@@ -22,5 +22,5 @@
     init();
   }
 
-  window.addEventListener('scroll', Utils.debounce(handleScroll, 10));
+  window.addEventListener('scroll', Utils.debounce(handleScroll, 50));
 })();
